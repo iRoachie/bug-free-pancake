@@ -1,0 +1,38 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Provider {
+  name         String         @id
+  description  String?
+}
+
+model SiteProvider {
+  id             Int              @id @default(autoincrement())
+  provider       Provider         @relation(fields: [providerName], references: [name])
+  providerName   String
+  site           Site            @relation("SiteProvider", fields: [siteId], references: [id])
+  siteId         Int
+  dnsName        String
+}
+
+model ActiveProvider {
+  site     Site         @relation(fields: [A], references: [id])
+  A        Int
+  provider SiteProvider @relation(fields: [B], references: [id])
+  B        Int
+
+  @@id([A, B])
+}
+
+model Site {
+  id             Int             @id
+  domain         String          @unique
+  providers      SiteProvider[]  @relation(name: "SiteProvider")
+  activeProvider ActiveProvider?
+}

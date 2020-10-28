@@ -1,0 +1,16 @@
+version: '3.3'
+
+services:
+  db:
+    image: mysql:8.0.20
+    volumes:
+      - ./.db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: default
+    ports:
+      - 3306:3306
+
+volumes:
+  db_data: {}
